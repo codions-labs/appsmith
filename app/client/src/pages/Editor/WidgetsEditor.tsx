@@ -22,10 +22,11 @@ import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
 import { getCurrentApplication } from "selectors/applicationSelectors";
+import { MainContainerLayoutControl } from "./MainContainerLayoutControl";
 
 const EditorWrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
   overflow: hidden;
@@ -47,6 +48,8 @@ const CanvasContainer = styled.section`
     pointer-events: none;
   }
 `;
+
+export type CanvasLayoutType = "fixed" | "fluid";
 
 /* eslint-disable react/display-name */
 const WidgetsEditor = () => {
@@ -118,6 +121,7 @@ const WidgetsEditor = () => {
   return (
     <EditorContextProvider>
       <EditorWrapper onClick={handleWrapperClick}>
+        <MainContainerLayoutControl />
         <CanvasContainer key={currentPageId} className={getCanvasClassName()}>
           {node}
         </CanvasContainer>
