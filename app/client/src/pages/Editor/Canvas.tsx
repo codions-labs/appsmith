@@ -11,22 +11,26 @@ interface CanvasProps {
 }
 
 // TODO(abhinav): get the render mode from context
-const Canvas = memo((props: CanvasProps) => {
-  try {
-    return (
-      <React.Fragment>
-        <PropertyPane />
-        <ArtBoard width={props.dsl.rightColumn}>
-          {props.dsl.widgetId &&
-            WidgetFactory.createWidget(props.dsl, RenderModes.CANVAS)}
-        </ArtBoard>
-      </React.Fragment>
-    );
-  } catch (error) {
-    console.log("Error rendering DSL", error);
-    return null;
-  }
-});
+const Canvas = memo(
+  (props: CanvasProps) => {
+    try {
+      return (
+        <React.Fragment>
+          <PropertyPane />
+          <ArtBoard width={props.dsl.rightColumn}>
+            {props.dsl.widgetId &&
+              WidgetFactory.createWidget(props.dsl, RenderModes.CANVAS)}
+          </ArtBoard>
+        </React.Fragment>
+      );
+    } catch (error) {
+      console.log("Error rendering DSL", error);
+      return null;
+    }
+  },
+  (prevProps, nextProps) =>
+    prevProps.dsl.rightColumn === nextProps.dsl.rightColumn,
+);
 
 Canvas.displayName = "Canvas";
 

@@ -5,6 +5,13 @@ import { RenderModes } from "constants/WidgetConstants";
 import WidgetFactory from "utils/WidgetFactory";
 import { ContainerWidgetProps } from "widgets/ContainerWidget";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { useWindowSizeHooks } from "utils/hooks/dragResizeHooks";
+import { useSelector } from "store";
+import { AppState } from "reducers";
+import { getWidget } from "sagas/selectors";
+import { useDispatch } from "react-redux";
+import { updateWidget } from "actions/pageActions";
+import { theme } from "constants/DefaultTheme";
 
 const PageView = styled.div<{ width: number }>`
   height: 100%;
@@ -21,6 +28,25 @@ type AppPageProps = {
 };
 
 export const AppPage = (props: AppPageProps) => {
+  const { width } = useWindowSizeHooks();
+  const mainContainer = useSelector((state: AppState) => getWidget(state, "0"));
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const layoutType = localStorage.getItem("LAYOUT");
+
+    if (layoutType === "fluid") {
+      const { leftColumn, topRow, bottomRow } = mainContainer;
+      dispatch(
+        updateWidget("RESIZE", "0", {
+          rightColumn: width - parseInt(theme.sidebarWidth),
+          leftColumn,
+          topRow,
+          bottomRow,
+        }),
+      );
+    }
+  }, [width]);
   useEffect(() => {
     AnalyticsUtil.logEvent("PAGE_LOAD", {
       pageName: props.pageName,
