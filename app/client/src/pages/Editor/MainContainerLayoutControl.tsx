@@ -1,7 +1,7 @@
 import { updateWidget } from "actions/pageActions";
 import { CANVAS_DEFAULT_WIDTH_PX } from "constants/AppConstants";
 import { theme } from "constants/DefaultTheme";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppState } from "reducers";
 import { getWidget } from "sagas/selectors";
@@ -26,7 +26,16 @@ const LayoutControlWrapper = styled.div`
 export const MainContainerLayoutControl: React.FC<any> = () => {
   const { width } = useWindowSizeHooks();
   const mainContainer = useSelector((state: AppState) => getWidget(state, "0"));
+  const [layoutType, setLayoutType] = useState<CanvasLayoutType>("fluid");
   const dispatch = useDispatch();
+  useEffect(() => {
+    updateLayout(layoutType);
+  }, [layoutType]);
+  useEffect(() => {
+    if (layoutType === "fluid") {
+      updateLayout(layoutType);
+    }
+  }, [width]);
 
   const updateLayout = (layoutType: CanvasLayoutType) => {
     const { leftColumn, topRow, bottomRow } = mainContainer;
@@ -42,11 +51,12 @@ export const MainContainerLayoutControl: React.FC<any> = () => {
         bottomRow,
       }),
     );
+    localStorage.setItem("LAYOUT", layoutType);
   };
   return (
     <LayoutControlWrapper>
-      <button onClick={() => updateLayout("fluid")}>Fluid</button>
-      <button onClick={() => updateLayout("fixed")}>Fixed</button>
+      <button onClick={() => setLayoutType("fluid")}>Fluid</button>
+      <button onClick={() => setLayoutType("fixed")}>Fixed</button>
     </LayoutControlWrapper>
   );
 };

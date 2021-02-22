@@ -11,18 +11,24 @@ import {
 import Centered from "components/designSystems/appsmith/CenteredWrapper";
 import EditorContextProvider from "components/editorComponents/EditorContextProvider";
 import { Spinner } from "@blueprintjs/core";
-import { useWidgetSelection } from "utils/hooks/dragResizeHooks";
+import {
+  useWidgetSelection,
+  useWindowSizeHooks,
+} from "utils/hooks/dragResizeHooks";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import * as log from "loglevel";
 import { getCanvasClassName } from "utils/generators";
 import { flashElementById } from "utils/helpers";
 import { useParams } from "react-router";
-import { fetchPage } from "actions/pageActions";
+import { fetchPage, updateWidget } from "actions/pageActions";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
 import { getCurrentApplication } from "selectors/applicationSelectors";
 import { MainContainerLayoutControl } from "./MainContainerLayoutControl";
+import { getWidget } from "sagas/selectors";
+import { theme } from "constants/DefaultTheme";
+import { AppState } from "reducers";
 
 const EditorWrapper = styled.div`
   display: flex;
@@ -63,6 +69,22 @@ const WidgetsEditor = () => {
   const currentPageId = useSelector(getCurrentPageId);
   const currentPageName = useSelector(getCurrentPageName);
   const currentApp = useSelector(getCurrentApplication);
+  const { width } = useWindowSizeHooks();
+  const mainContainer = useSelector((state: AppState) => getWidget(state, "0"));
+  useEffect(() => {
+    const layoutType = localStorage.getItem("LAYOUT");
+    if (layoutType === "fluid") {
+      const { leftColumn, topRow, bottomRow } = mainContainer;
+      dispatch(
+        updateWidget("RESIZE", "0", {
+          rightColumn: width - parseInt(theme.sidebarWidth),
+          leftColumn,
+          topRow,
+          bottomRow,
+        }),
+      );
+    }
+  }, [width]);
 
   useEffect(() => {
     PerformanceTracker.stopTracking(PerformanceTransactionName.EDITOR_MOUNT);
@@ -112,6 +134,7 @@ const WidgetsEditor = () => {
   if (isFetchingPage) {
     node = pageLoading;
   }
+
   if (!isFetchingPage && widgets) {
     node = <Canvas dsl={widgets} />;
   }
