@@ -149,18 +149,18 @@ export function KeyValueComponent(props: KeyValueComponentProps) {
         return (
           <StyledOptionControlWrapper orientation={"HORIZONTAL"} key={pair.key}>
             <StyledOptionControlInputGroup
-              type={"text"}
+              dataType={"text"}
               placeholder={"Name"}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                updateKey(index, event.target.value);
+              onChange={(value: string) => {
+                updateKey(index, value);
               }}
               defaultValue={pair.label}
             />
             <StyledOptionControlInputGroup
-              type={"text"}
+              dataType={"text"}
               placeholder={"Value"}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                updateValue(index, event.target.value);
+              onChange={(value: string) => {
+                updateValue(index, value);
               }}
               defaultValue={pair.value}
             />
