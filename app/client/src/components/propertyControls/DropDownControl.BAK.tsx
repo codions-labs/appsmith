@@ -9,7 +9,7 @@ import {
 } from "./StyledControls";
 import { ControlIcons, ControlIconName } from "icons/ControlIcons";
 import { DropdownOption } from "widgets/DropdownWidget";
-import styled from "constants/DefaultTheme";
+import styled from "styled-components";
 
 const MenuItemWrapper = styled(MenuItem)`
   z-index: 2;

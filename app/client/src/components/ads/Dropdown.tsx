@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Text, { TextType } from "./Text";
 import { Popover, Position } from "@blueprintjs/core";
 
-type DropdownOption = {
+export type DropdownOption = {
   label?: string;
   value?: string;
   id?: string;
